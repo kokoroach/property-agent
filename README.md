@@ -50,6 +50,12 @@ npm run dev
 
 ---
 
+## 💻 Data Model
+
+<img width="1048" height="401" alt="property_agent" src="https://github.com/user-attachments/assets/fe16f39c-3d97-4caa-9407-3431343ed659" />
+
+---
+
 ## 💻 Dashboard
 
 ### Browse the Form → [http://localhost:5173/](http://localhost:5173/)
