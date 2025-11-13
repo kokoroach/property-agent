@@ -46,7 +46,7 @@
   ];
 
 
-const _getAgentByIdHelper = (id: number, res: Response): Agent | null => {
+const _getAgentByIdHandler = (id: number, res: Response): Agent | null => {
   const agent = agents.find(a => a.id === id);
   if (!agent) {
     res.status(404).json({ message: "Agent not found" });
@@ -62,13 +62,13 @@ export const getAgents = (req: Request, res: Response) => {
 };
 
 export const getAgentById = (req: Request, res: Response) => {
-  const agent = _getAgentByIdHelper(Number(req.params.id), res);
+  const agent = _getAgentByIdHandler(Number(req.params.id), res);
   if (!agent) return;
 
   res.json(agent)
 };
 
-export const createAgent = (req: Request, res: Response) => {
+const _createAgent = (req: Request, res: Response) => {
   const _now: Date = new Date(Date.now())
   // TODO: Do validation of fields?
   // TODO: Error-prone as assumes agents are sorted by id
@@ -80,7 +80,7 @@ export const createAgent = (req: Request, res: Response) => {
 };
 
 export const updateAgent = (req: Request, res: Response) => {
-  const agent = _getAgentByIdHelper(Number(req.params.id), res);
+  const agent = _getAgentByIdHandler(Number(req.params.id), res);
   if (!agent) return
 
   // Do not include dates in the update
@@ -89,8 +89,19 @@ export const updateAgent = (req: Request, res: Response) => {
   res.json(agent);
 };
 
+export const upsertAgent = (req: Request, res: Response) => {
+  const agent = agents.find(a => a.email === req.params.email);
+  if (!agent) return _createAgent(req, res);
+
+  // Include the ID number as it is required in the update
+  req.params.id = agent.id.toString()
+  return updateAgent(req, res)
+};
+
+
+
 export const removeAgentById   = (req: Request, res: Response) => {
-  const agent = _getAgentByIdHelper(Number(req.params.id), res);
+  const agent = _getAgentByIdHandler(Number(req.params.id), res);
   if (!agent) return;
   
   agent.isActive = false;
