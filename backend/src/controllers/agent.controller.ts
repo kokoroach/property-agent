@@ -62,7 +62,7 @@ export const getAgents = (req: Request, res: Response) => {
 };
 
 export const getAgentById = (req: Request, res: Response) => {
-  const agent = _getAgentByIdHandler(Number(req.params.id), res);
+  const agent = _getAgentByIdHandler(Number(req.body.id), res);
   if (!agent) return;
 
   res.json(agent)
@@ -73,14 +73,20 @@ const _createAgent = (req: Request, res: Response) => {
   // TODO: Do validation of fields?
   // TODO: Error-prone as assumes agents are sorted by id
   const lastId = agents.length > 0 ? agents[agents.length - 1].id : 0;
-  const newAgent: Agent = { id: lastId + 1, created: _now, updated: _now, ...req.body };
+  const newAgent: Agent = {
+    id: lastId + 1,
+    isActive: true,
+    created: _now,
+    updated: _now,
+    ...req.body
+  };
   agents.push(newAgent);
 
   res.status(201).json(newAgent);
 };
 
 export const updateAgent = (req: Request, res: Response) => {
-  const agent = _getAgentByIdHandler(Number(req.params.id), res);
+  const agent = _getAgentByIdHandler(Number(req.body.id), res);
   if (!agent) return
 
   // Do not include dates in the update
@@ -90,18 +96,16 @@ export const updateAgent = (req: Request, res: Response) => {
 };
 
 export const upsertAgent = (req: Request, res: Response) => {
-  const agent = agents.find(a => a.email === req.params.email);
+  const agent = agents.find(a => a.email === req.body.email);
   if (!agent) return _createAgent(req, res);
 
   // Include the ID number as it is required in the update
-  req.params.id = agent.id.toString()
+  req.body.id = agent.id
   return updateAgent(req, res)
 };
 
-
-
 export const removeAgentById   = (req: Request, res: Response) => {
-  const agent = _getAgentByIdHandler(Number(req.params.id), res);
+  const agent = _getAgentByIdHandler(Number(req.body.id), res);
   if (!agent) return;
   
   agent.isActive = false;
