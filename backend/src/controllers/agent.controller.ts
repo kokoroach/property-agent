@@ -74,7 +74,7 @@ export const getAgents = (req: Request, res: Response) => {
 };
 
 export const getAgentById = (req: Request, res: Response) => {
-  const agent = _getAgentByIdHandler(Number(req.body.id), res);
+  const agent = _getAgentByIdHandler(Number(req.params.id), res);
   if (!agent) return;
 
   res.json(agent)
@@ -106,7 +106,7 @@ const _createAgent = (req: Request, res: Response) => {
 };
 
 export const updateAgent = (req: Request, res: Response) => {
-  const agent = _getAgentByIdHandler(Number(req.body.id), res);
+  const agent = _getAgentByIdHandler(Number(req.params.id), res);
   if (!agent) return
 
   // Do not include dates in the update
@@ -125,7 +125,7 @@ export const upsertAgent = (req: Request, res: Response) => {
 };
 
 export const removeAgentById   = (req: Request, res: Response) => {
-  const agent = _getAgentByIdHandler(Number(req.body.id), res);
+  const agent = _getAgentByIdHandler(Number(req.params.id), res);
   if (!agent) return;
   
   agent.isActive = false;
