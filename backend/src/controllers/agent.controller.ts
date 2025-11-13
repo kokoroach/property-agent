@@ -1,49 +1,61 @@
-  import { Request, Response } from "express";
-  import { Agent } from "../models/agent.model.ts";
+import { Request, Response } from "express";
+import { Agent } from "../models/agent.model.ts";
 
 
-  let agents: Agent[] = [
-    {
-      id: 1,
-      firstName: "Alice",
-      lastName: "WonderLand",
-      email: "alice@example.com",
-      mobileNumber: "0948",
-      isActive: true,
-      created: new Date("2025-01-15T00:00:01"),
-      updated: new Date("2025-01-15T00:00:01")
-    },
-    {
-      id: 2, 
-      firstName: "Bob", 
-      lastName: "Builder", 
-      email: "bob@example.com", 
-      mobileNumber: "0978", 
-      isActive: true,
-      created: new Date( "2025-01-15T00:00:02"),
-      updated: new Date("2025-01-15T00:00:02")
-    },
-    {
-      id: 3,
-      firstName: "Pedro",
-      lastName: "Penduko",
-      email: "pedro@example.com",
-      mobileNumber: "0951",
-      isActive: true,
-      created: new Date("2025-01-15T00:00:03"),
-      updated: new Date("2025-01-15T00:00:03")
-    },
-    {
-      id: 4,
-      firstName: "Maria",
-      lastName: "Makiling",
-      email: "maria@example.com",
-      mobileNumber: "0952",
-      isActive: false,
-      created: new Date("2025-01-15T00:00:04"),
-      updated: new Date("2025-01-15T00:00:04")
-    },
-  ];
+let agents: Agent[] = [
+  {
+    id: 1,
+    firstName: "Alice",
+    lastName: "WonderLand",
+    email: "alice@example.com",
+    mobileNumber: "0948",
+    properties: [],
+    notes: [],
+    reminders: [],
+    isActive: true,
+    created: new Date("2025-01-15T00:00:01"),
+    updated: new Date("2025-01-15T00:00:01")
+  },
+  {
+    id: 2, 
+    firstName: "Bob", 
+    lastName: "Builder", 
+    email: "bob@example.com", 
+    mobileNumber: "0978", 
+    properties: [],
+    notes: [],
+    reminders: [],
+    isActive: true,
+    created: new Date( "2025-01-15T00:00:02"),
+    updated: new Date("2025-01-15T00:00:02")
+  },
+  {
+    id: 3,
+    firstName: "Pedro",
+    lastName: "Penduko",
+    email: "pedro@example.com",
+    mobileNumber: "0951",
+    properties: [],
+    notes: [],
+    reminders: [],
+    isActive: true,
+    created: new Date("2025-01-15T00:00:03"),
+    updated: new Date("2025-01-15T00:00:03")
+  },
+  {
+    id: 4,
+    firstName: "Maria",
+    lastName: "Makiling",
+    email: "maria@example.com",
+    mobileNumber: "0952",
+    properties: [],
+    notes: [],
+    reminders: [],
+    isActive: false,
+    created: new Date("2025-01-15T00:00:04"),
+    updated: new Date("2025-01-15T00:00:04")
+  },
+];
 
 
 const _getAgentByIdHandler = (id: number, res: Response): Agent | null => {
@@ -72,13 +84,21 @@ const _createAgent = (req: Request, res: Response) => {
   const _now: Date = new Date(Date.now())
   // TODO: Do validation of fields?
   // TODO: Error-prone as assumes agents are sorted by id
+  // TODO: Resolve, ensure to sort agent list (for in memory setup)
   const lastId = agents.length > 0 ? agents[agents.length - 1].id : 0;
+  
+  // TODO: handle default data such as properties, notes, etc.
   const newAgent: Agent = {
     id: lastId + 1,
+    properties: [],
+    notes: [],
+    reminders: [],
+    ...req.body,
+    // Ensures to override data that could exist. Could be handled more
+    // gracefully
     isActive: true,
     created: _now,
     updated: _now,
-    ...req.body
   };
   agents.push(newAgent);
 
